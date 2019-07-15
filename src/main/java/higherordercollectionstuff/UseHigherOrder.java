@@ -2,6 +2,7 @@ package higherordercollectionstuff;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class UseHigherOrder {
@@ -16,9 +17,19 @@ public class UseHigherOrder {
         return res;
     }
 
+    public static <E,F> List<F> map(Iterable<E> in, Function<E, F> op) {
+        List<F> results = new ArrayList<>();
+        in.forEach(e -> results.add(op.apply(e)));
+        return results;
+    }
+
     public static void main(String[] args) {
         List<String> ls = new ArrayList<>(Arrays.asList("Fred", "Jim", "Sheila"));
         filter(ls, x -> x.length() > 3).forEach(x -> System.out.println(x));
+
+        map(ls, x -> x.toUpperCase()).forEach(x -> System.out.println(x));
+        UseHigherOrder.<String, Integer>map(ls, x -> x.length()).forEach(x -> System.out.println(x));
+
 
         ls.removeIf(x -> x.length() < 4);
         ls.forEach(x -> System.out.println(x));
