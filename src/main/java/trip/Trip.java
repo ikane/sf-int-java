@@ -34,7 +34,7 @@ class AirportId {
     }
 }
 
-public final class Trip {
+public class Trip {
     private String origin;
     private String destination;
     private ZonedDateTime depart;

@@ -14,13 +14,13 @@ public class SuperIterable<E> implements Iterable<E> {
         self = target;
     }
 
-    public SuperIterable<E> filter(Predicate<E> pred) {
+    public SuperIterable<E> filter(Predicate<? super E> pred) {
         List<E> rv = new ArrayList<>();
         self.forEach(e -> {if (pred.test(e)) rv.add(e);});
         return new SuperIterable<>(rv);
     }
 
-    public <F> SuperIterable<F> map(Function<E, F> op) {
+    public <F> SuperIterable<F> map(Function<? super E, ? extends F> op) {
         List<F> rv = new ArrayList<>();
         self.forEach(e -> rv.add(op.apply(e)));
         return new SuperIterable<>(rv);
