@@ -23,7 +23,7 @@ class Producer implements Runnable {
                 if (i == 5_000) {
                     data[0] = -1;
                 }
-                queue.put(data);
+                queue.put(data); data = null;
             }
         } catch (InterruptedException ie) {
             ie.printStackTrace();
