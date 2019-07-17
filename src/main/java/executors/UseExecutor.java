@@ -1,5 +1,6 @@
 package executors;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -13,6 +14,7 @@ class MyCallable implements Callable<String> {
     public String call() throws Exception {
         System.out.println(jobName + " starting");
         UseExecutor.delay(ThreadLocalRandom.current().nextInt(1000, 3000));
+        if (ThreadLocalRandom.current().nextInt(0, 4) > 2) throw new SQLException();
         System.out.println(jobName + " finishing...");
         return jobName + " Completed!";
     }
@@ -34,17 +36,33 @@ public class UseExecutor {
         futures.add(ex.submit(new MyCallable()));
         futures.add(ex.submit(new MyCallable()));
         futures.add(ex.submit(new MyCallable()));
+//        ex.shutdown();
         futures.add(ex.submit(new MyCallable()));
+//        ex.shutdownNow();
+        ex.shutdown();
 
-        while (futures.size() > 0){
-            Iterator<Future<String>> ifs = futures.iterator();
-            while (ifs.hasNext()) {
-                Future<String> fs = ifs.next();
-                if (fs.isDone()) {
-                    System.out.println(fs.get());
-                    ifs.remove();
+        try {
+            while (futures.size() > 0) {
+                Iterator<Future<String>> ifs = futures.iterator();
+                while (ifs.hasNext()) {
+//                    System.out.print(".");
+                    Future<String> fs = ifs.next();
+                    if (fs.isCancelled()) {
+                        System.out.println("job canceled");
+                        ifs.remove();
+                    } else if (fs.isDone()) {
+                        System.out.println("Trying to get result");
+                        try {
+                            System.out.println(fs.get());
+                        } catch(ExecutionException ee) {
+                            System.out.println("Job threw executionexceptoin, cause is " + ee.getCause());
+                        }
+                        ifs.remove();
+                    }
                 }
             }
+        } catch (Throwable t) {
+            t.printStackTrace();
         }
 
         /*
