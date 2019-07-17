@@ -17,11 +17,12 @@ import java.util.function.Predicate;
 //}
 
 class AirportId {
-//    private static final List<String> ls = new ArrayList<>(Arrays.asList(/*LocalDate.now(), */"Fred"));
+    //    private static final List<String> ls = new ArrayList<>(Arrays.asList(/*LocalDate.now(), */"Fred"));
     private static final Map<String, AirportId> existing = new HashMap<>();
     private String id;
 
-    private AirportId() {}
+    private AirportId() {
+    }
 
     public AirportId of(String id) {
         AirportId self = existing.get(id);
