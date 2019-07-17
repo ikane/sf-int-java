@@ -1,5 +1,8 @@
 package executors;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.*;
 
 
@@ -26,20 +29,22 @@ public class UseExecutor {
 
     public static void main(String[] args) throws Throwable {
         ExecutorService ex = Executors.newFixedThreadPool(2);
+        List<Future<String>> futures = new ArrayList<>();
 
-        Future<String> handle1 = ex.submit(new MyCallable());
-        Future<String> handle2 = ex.submit(new MyCallable());
-        Future<String> handle3 = ex.submit(new MyCallable());
-        Future<String> handle4 = ex.submit(new MyCallable());
-        while (!handle1.isDone()){
-            System.out.print(".");
-            System.out.flush();
+        futures.add(ex.submit(new MyCallable()));
+        futures.add(ex.submit(new MyCallable()));
+        futures.add(ex.submit(new MyCallable()));
+        futures.add(ex.submit(new MyCallable()));
+
+        while (futures.size() > 0){
+            Iterator<Future<String>> ifs = futures.iterator();
+            while (ifs.hasNext()) {
+                Future<String> fs = ifs.next();
+                if (fs.isDone()) {
+                    System.out.println(fs.get());
+                    ifs.remove();
+                }
+            }
         }
-        System.out.println("\nGetting from job 1: " + handle1.get());
-
-        delay(4_000);
-        System.out.println("Getting from job 2: " + handle2.get());
-        System.out.println("Getting from job 3: " + handle3.get());
-        System.out.println("Getting from job 4: " + handle4.get());
     }
 }
