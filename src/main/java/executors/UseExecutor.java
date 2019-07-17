@@ -46,5 +46,12 @@ public class UseExecutor {
                 }
             }
         }
+
+        /*
+        ExecutorService.shutdown... shutdownNow...
+        Future.cancel... some / one of the jobs to be canceled a) before it starts b) while running
+        What happens if a job throws an exception during execution?
+         */
+
     }
 }
